@@ -118,4 +118,51 @@ class FunnelTest < Minitest::Test
     assert_equal 'b', funnel.drip
     assert_equal expected_value, funnel.to_s
   end
+
+  def test_drip_left_element
+    funnel = Funnel.new
+    expected_value = %(
+\\           /
+ \\         /
+  \\       /
+   \\   3 /
+    \\ 2 /
+    ).strip
+
+    funnel.fill 1, 2, 3
+
+    assert_equal 1, funnel.drip
+    assert_equal expected_value, funnel.to_s
+  end
+
+  def test_drip_group
+    # funnel = Funnel.new
+    # funnel.fill 12, 11, 15
+    # expected_value = [11, 15]
+
+    # element = funnel.drip
+
+    # assert_equal 12, element
+    # assert_equal expected_value, funnel.to_a
+
+    funnel = Funnel.new
+    funnel.fill 13, 11, 12, 15
+    expected_value = [12, 11, 15]
+
+    element = funnel.drip
+
+    assert_equal 13, element
+    assert_equal expected_value, funnel.to_a
+
+    funnel = Funnel.new
+    funnel.fill(*(1..15))
+    expected_value = [
+      2, 4, 3, 7, 5, 6, 11, 8, 9, 10, 12, 13, 14, 15
+    ]
+
+    element = funnel.drip
+
+    assert_equal 1, element
+    assert_equal expected_value, funnel.to_a
+  end
 end
