@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'minitest/autorun'
 require 'pp'
 require 'pry'
@@ -135,25 +137,30 @@ class FunnelTest < Minitest::Test
     assert_equal expected_value, funnel.to_s
   end
 
-  def test_drip_group
-    # funnel = Funnel.new
-    # funnel.fill 12, 11, 15
-    # expected_value = [11, 15]
-
-    # element = funnel.drip
-
-    # assert_equal 12, element
-    # assert_equal expected_value, funnel.to_a
-
+  def test_drip_group_3
     funnel = Funnel.new
-    funnel.fill 13, 11, 12, 15
-    expected_value = [12, 11, 15]
+    funnel.fill 12, 11, 15
+    expected_value = [11, 15]
 
-    element = funnel.drip
-
-    assert_equal 13, element
+    assert_equal 12, funnel.drip
     assert_equal expected_value, funnel.to_a
+  end
 
+  def test_drip_group_6
+    funnel = Funnel.new
+    funnel.fill 14, 7, 13, 11, 12, 15
+
+    assert_equal 14, funnel.drip
+    assert_equal 7, funnel.drip
+    assert_equal 13, funnel.drip
+    assert_equal 12, funnel.drip
+    assert_equal 11, funnel.drip
+    assert_equal 15, funnel.drip
+
+    assert_equal [], funnel.to_a
+  end
+
+  def test_drip_group_15
     funnel = Funnel.new
     funnel.fill(*(1..15))
     expected_value = [

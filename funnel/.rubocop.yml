@@ -1,5 +1,14 @@
+AllCops:
+  TargetRubyVersion: 2.4
+
 Style/Documentation:
   Enabled: false
+Metrics/AbcSize:
+  Exclude:
+    - '*_test.rb'
+Metrics/ClassLength:
+  Exclude:
+  - '*_test.rb'
 Metrics/MethodLength:
   Max: 120
   Exclude:

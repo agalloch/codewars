@@ -1,12 +1,9 @@
+# frozen_string_literal: true
+
 class Funnel
   CAPACITY = 15
 
-  attr_reader :funnel
-
   def initialize
-    @funnel = []
-    # @tree = build_tree funnel
-
     top = Group.new(nil, 5)
     fourth = Group.new(top, 4)
     third = Group.new(fourth, 3)
@@ -23,16 +20,14 @@ class Funnel
   end
 
   def fill(*numbers)
-    funnel.concat numbers.first CAPACITY
-    # @tree = build_tree funnel
+    new_content = numbers.first CAPACITY
 
-    new_content = numbers.dup
     while new_content.any?
-      @groups.each do |g|
-        while new_content.first and !g.full?
-          g.fill new_content.shift
-        end
+      groups.each do |g|
+        g.fill new_content.shift while new_content.first && !g.full?
       end
+
+      break
     end
   end
 
@@ -41,41 +36,41 @@ class Funnel
   end
 
   def drip
-    funnel.shift
-    @groups.first.drip
+    drop = groups.first.drip
+
+    if drop == Group::EMPTY_SOCKET
+      nil
+    else
+      drop
+    end
   end
 
   def to_a
-    @groups.each_with_object([]) do |g, result|
-      result.concat g.to_a
-    end
+    groups
+      .each_with_object([]) { |g, result| result.concat g.to_a }
+      .reject { |el| el == Group::EMPTY_SOCKET }
   end
 
   private
 
-  attr_reader :tree
+  attr_reader :groups
 
   def rows
-    ze_funnel = funnel.dup
-
-    5.times.reverse_each.each_with_index.map do |row, index|
-      prepad row, nth_row(ze_funnel, index.succ)
+    4.downto(0).zip(groups).map do |row, group|
+      prepad row, nth_row(group.to_a)
     end.reverse.join "\n"
   end
 
-  def nth_row(elements, slots)
-    string_row elements.shift(slots), slots
-  end
+  def nth_row(elements)
+    string = elements.map do |el|
+      if el == Group::EMPTY_SOCKET
+        ' '
+      else
+        el
+      end
+    end.join ' '
 
-  def string_row(elements, n)
-    "\\ #{row(elements, n)} /"
-  end
-
-  def row(elements, slots)
-    ([' '] * slots)
-      .zip(elements)
-      .map { |pad, el| el ? el : pad }
-      .join ' '
+    "\\ #{string} /"
   end
 
   def prepad(n, string)
@@ -83,28 +78,34 @@ class Funnel
   end
 
   class Group
+    EMPTY_SOCKET = '*'
+
     def initialize(top_group, capacity)
       @top_group = top_group
       @capacity = capacity
-      @group = []
+      @group = [EMPTY_SOCKET] * capacity
     end
 
     def fill(el)
       return if full?
 
-      group << el
+      insertion_index =
+        group.find_index { |socket| socket == EMPTY_SOCKET }
+
+      if insertion_index
+        group[insertion_index] = el
+      else
+        group << el
+      end
     end
 
-    def drip
-      binding.pry if top_group&.to_a.size == 2
-      return group.shift unless top_group&.to_a.any?
+    def drip(start_index = 0)
+      return drip_element! start_index if no_parent?
 
-      drip_index = group.each_with_index.map do |el, ix|
-        [top_group.to_a[ix..ix.succ].count { |el| !el.nil? }, ix]
-      end.max_by { |count, _| count }.last
-binding.pry
+      drip_index = index_by_weight.max_by(&:first).last
+
       group[drip_index].tap do
-        group[drip_index] = top_group.drip
+        group[drip_index] = top_group.drip drip_index
       end
     end
 
@@ -113,71 +114,49 @@ binding.pry
     end
 
     def full?
-      group.size == capacity
+      group.count { |el| el != EMPTY_SOCKET } == capacity
+    end
+
+    def weight(at_index)
+      if no_parent?
+        return group[at_index..at_index.succ].count do |el|
+          el != EMPTY_SOCKET
+        end
+      end
+
+      top_group.weight at_index
     end
 
     private
 
+    def no_parent?
+      top_group.nil? ||
+        top_group.to_a.none? { |el| el != EMPTY_SOCKET }
+    end
+
+    def index_by_weight
+      group.each_with_index.map do |_, ix|
+        [top_group.weight(ix), ix]
+      end
+    end
+
+    def calculate_index(offset)
+      replace_index =
+        group[offset..-1].find_index do |socket|
+          socket != EMPTY_SOCKET
+        end || 0
+
+      replace_index + offset
+    end
+
+    def drip_element!(start_index)
+      replace_index = calculate_index start_index
+
+      group[replace_index].tap do
+        group[replace_index] = EMPTY_SOCKET
+      end
+    end
+
     attr_reader :group, :capacity, :top_group
-  end
-
-  # def build_tree(array)
-  #   Node.from funnel
-  # end
-
-  class Node
-    attr_reader :value
-    attr_accessor :left, :right
-
-    class << self
-      def from(array)
-        seed = array.dup
-
-        root = new seed.shift
-        q = [root]
-
-        while q.any?
-          node = q.shift
-
-          if seed.first
-            node.left = new seed.shift
-            q << node.left
-          end
-
-          if seed.first
-            node.right = new seed.shift
-            q << node.right
-          end
-        end
-
-        root
-      end
-    end
-
-    def initialize(value, left = nil, right = nil)
-      @value = value
-      @left = left
-      @right = right
-    end
-
-    def weight
-      1 + (left&.weight).to_i + (right&.weight).to_i
-    end
-
-    def to_a
-      result = []
-      queue = [self]
-
-      while queue.any?
-        node = queue.shift
-
-        result << node.value
-
-        queue << node.left if node.left
-        queue << node.right if node.right
-      end
-
-      result
-    end
   end
 end
