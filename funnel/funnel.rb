@@ -102,7 +102,7 @@ class Funnel
     def drip(start_index = 0)
       return drip_element! start_index if no_parent?
 
-      drip_index = index_by_weight.max_by(&:first).last
+      drip_index = max_index_by_weight start_index
 
       group[drip_index].tap do
         group[drip_index] = top_group.drip drip_index
@@ -117,14 +117,15 @@ class Funnel
       group.count { |el| el != EMPTY_SOCKET } == capacity
     end
 
-    def weight(at_index)
-      if no_parent?
-        return group[at_index..at_index.succ].count do |el|
-          el != EMPTY_SOCKET
-        end
+    def weight(at_index, to_index = at_index.succ)
+      self_weight = group[at_index..to_index].count do |el|
+        el != EMPTY_SOCKET
       end
 
-      top_group.weight at_index
+      return self_weight if no_parent?
+
+      self_weight +
+        top_group.weight(at_index, to_index.succ)
     end
 
     private
@@ -134,10 +135,17 @@ class Funnel
         top_group.to_a.none? { |el| el != EMPTY_SOCKET }
     end
 
-    def index_by_weight
-      group.each_with_index.map do |_, ix|
-        [top_group.weight(ix), ix]
-      end
+    def index_by_weight(offset)
+      group
+        .each_with_index
+        .map { |_, ix| [top_group.weight(ix), ix] }
+        .reject { |_, ix| ix < offset }
+    end
+
+    def max_index_by_weight(offset)
+      return 0 if group.size == 1
+
+      index_by_weight(offset).max_by(&:first).last
     end
 
     def calculate_index(offset)

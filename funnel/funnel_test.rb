@@ -167,9 +167,107 @@ class FunnelTest < Minitest::Test
       2, 4, 3, 7, 5, 6, 11, 8, 9, 10, 12, 13, 14, 15
     ]
 
-    element = funnel.drip
-
-    assert_equal 1, element
+    assert_equal 1, funnel.drip
     assert_equal expected_value, funnel.to_a
+  end
+
+  def test_special_kata_case
+    funnel = Funnel.new
+    funnel.fill 9, 6, 6, 2, 1, 6, 9, 2, 8, 1, 0, 0, 1, 9, 9
+
+    start_funnel = %(
+\\0 0 1 9 9/
+ \\9 2 8 1/
+  \\2 1 6/
+   \\6 6/
+    \\9/
+    ).strip
+
+    assert_equal start_funnel, funnel.to_s
+
+    dripped_once = %(
+\\  0 1 9 9/
+ \\0 2 8 1/
+  \\9 1 6/
+   \\2 6/
+    \\6/
+    ).strip
+
+    assert_equal 9, funnel.drip
+    assert_equal dripped_once, funnel.to_s,
+      'First drop'
+
+    dripped_twice = %(
+\\    1 9 9/
+ \\0 0 8 1/
+  \\9 2 6/
+   \\2 1/
+    \\6/
+    ).strip
+
+    assert_equal 6, funnel.drip
+    assert_equal dripped_twice, funnel.to_s,
+      'Second drop'
+
+    dripped_thrice = %(
+\\      9 9/
+ \\0 0 1 1/
+  \\9 2 8/
+   \\2 6/
+    \\1/
+    ).strip
+
+    assert_equal 6, funnel.drip
+    assert_equal dripped_thrice, funnel.to_s,
+      'Third drop'
+
+    dripped_fourth_time = %(
+\\        9/
+ \\0 0 1 9/
+  \\9 2 1/
+   \\2 8/
+    \\6/
+    ).strip
+
+    assert_equal 1, funnel.drip
+    assert_equal dripped_fourth_time, funnel.to_s,
+      'Fourth drop'
+
+    funnel.fill 7, 1, 5
+
+    refilled = %(
+\\7 1 5   9/
+ \\0 0 1 9/
+  \\9 2 1/
+   \\2 8/
+    \\6/
+    ).strip
+
+    assert_equal refilled, funnel.to_s,
+      "Refill didn't work correct"
+
+    dripped_fifth_time = %(
+\\  1 5   9/
+ \\7 0 1 9/
+  \\0 2 1/
+   \\9 8/
+    \\2/
+    ).strip
+
+    assert_equal 6, funnel.drip
+    assert_equal dripped_fifth_time, funnel.to_s,
+      'Fifth drop (of refilled)'
+
+    dripped_sixth_time = %(
+\\    5   9/
+ \\7 1 1 9/
+  \\0 0 1/
+   \\9 2/
+    \\8/
+    ).strip
+
+    assert_equal 2, funnel.drip
+    assert_equal dripped_sixth_time, funnel.to_s,
+      'Sixth and final drop'
   end
 end
