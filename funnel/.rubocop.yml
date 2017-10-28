@@ -1,8 +1,9 @@
 AllCops:
   TargetRubyVersion: 2.4
 
-Style/Documentation:
-  Enabled: false
+Layout/AlignParameters:
+  Exclude:
+    - '*_test.rb'
 Metrics/AbcSize:
   Exclude:
     - '*_test.rb'
@@ -13,3 +14,5 @@ Metrics/MethodLength:
   Max: 120
   Exclude:
     - '*_test.rb'
+Style/Documentation:
+  Enabled: false
