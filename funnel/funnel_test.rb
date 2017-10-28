@@ -13,11 +13,11 @@ class FunnelTest < Minitest::Test
   def test_empty
     funnel = Funnel.new
     expected_value = %(
-\\           /
- \\         /
-  \\       /
-   \\     /
-    \\   /
+\\         /
+ \\       /
+  \\     /
+   \\   /
+    \\ /
     ).strip
 
     assert_equal expected_value, funnel.to_s
@@ -26,11 +26,11 @@ class FunnelTest < Minitest::Test
   def test_fill_one
     funnel = Funnel.new
     expected_value = %(
-\\           /
- \\         /
-  \\       /
-   \\     /
-    \\ A /
+\\         /
+ \\       /
+  \\     /
+   \\   /
+    \\A/
     ).strip
 
     funnel.fill 'A'
@@ -41,11 +41,11 @@ class FunnelTest < Minitest::Test
   def test_fill_one_by_one
     funnel = Funnel.new
     expected_value = %(
-\\           /
- \\         /
-  \\       /
-   \\ 2 3 /
-    \\ 1 /
+\\         /
+ \\       /
+  \\     /
+   \\2 3/
+    \\1/
     ).strip
 
     funnel.fill 1
@@ -60,11 +60,11 @@ class FunnelTest < Minitest::Test
   def test_fill_at_once
     funnel = Funnel.new
     expected_value = %(
-\\           /
- \\         /
-  \\ 7     /
-   \\ 5 6 /
-    \\ 4 /
+\\         /
+ \\       /
+  \\7    /
+   \\5 6/
+    \\4/
     ).strip
 
     funnel.fill 4, 5, 6, 7
@@ -77,11 +77,11 @@ class FunnelTest < Minitest::Test
   def test_fill_max_capacity
     funnel = Funnel.new
     expected_value = %(
-\\ 11 12 13 14 15 /
- \\ 7 8 9 10 /
-  \\ 4 5 6 /
-   \\ 2 3 /
-    \\ 1 /
+\\11 12 13 14 15/
+ \\7 8 9 10/
+  \\4 5 6/
+   \\2 3/
+    \\1/
     ).strip
 
     funnel.fill(*(1..20))
@@ -94,11 +94,11 @@ class FunnelTest < Minitest::Test
   def test_drip_empty
     funnel = Funnel.new
     expected_value = %(
-\\           /
- \\         /
-  \\       /
-   \\     /
-    \\   /
+\\         /
+ \\       /
+  \\     /
+   \\   /
+    \\ /
     ).strip
 
     assert_nil funnel.drip
@@ -108,11 +108,11 @@ class FunnelTest < Minitest::Test
   def test_drip_last_element
     funnel = Funnel.new
     expected_value = %(
-\\           /
- \\         /
-  \\       /
-   \\     /
-    \\   /
+\\         /
+ \\       /
+  \\     /
+   \\   /
+    \\ /
     ).strip
 
     funnel.fill 'b'
@@ -124,11 +124,11 @@ class FunnelTest < Minitest::Test
   def test_drip_left_element
     funnel = Funnel.new
     expected_value = %(
-\\           /
- \\         /
-  \\       /
-   \\   3 /
-    \\ 2 /
+\\         /
+ \\       /
+  \\     /
+   \\  3/
+    \\2/
     ).strip
 
     funnel.fill 1, 2, 3

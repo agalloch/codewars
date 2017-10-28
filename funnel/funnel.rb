@@ -70,7 +70,7 @@ class Funnel
       end
     end.join ' '
 
-    "\\ #{string} /"
+    "\\#{string}/"
   end
 
   def prepad(n, string)
