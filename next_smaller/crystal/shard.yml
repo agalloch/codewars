@@ -1,0 +1,10 @@
+name: next_smaller
+version: 0.1.0
+
+targets:
+  meh:
+    main: src/next_smaller.cr
+
+crystal: 0.27.0
+
+license: MIT
