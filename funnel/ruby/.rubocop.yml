@@ -16,3 +16,5 @@ Metrics/MethodLength:
     - '*_test.rb'
 Style/Documentation:
   Enabled: false
+Naming/UncommunicativeMethodParamName:
+  Enabled: false
