@@ -21,7 +21,7 @@ cubesum xs = foldl (\acc x -> acc + (digitToInt x :: Int) ^ 3) 0 xs
 chunks _ [] = []
 chunks n xs = [take n xs] ++ chunks n (drop n xs)
 
-testRevRotTooShort = (revRot "1234" 0)
-testRevRotEmpty = (revRot "" 5)
-testRevRotTooLong = (revRot "1234" 5)
-testRevRot = (revRot "733049910872815764" 5)
+testRevRotTooShort = (revRot "1234" 0) == ""
+testRevRotEmpty = (revRot "" 5) == ""
+testRevRotTooLong = (revRot "1234" 5) == ""
+testRevRot = (revRot "733049910872815764" 5) == "330479108928157"
