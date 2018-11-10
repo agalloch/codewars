@@ -4,12 +4,11 @@ fn main() {
     println!("{:?}", (3..20).last());
     println!("{:?}", (9409 as f64).sqrt());
     println!("{:?}", (9409 as f64).sqrt() as usize);
-    println!("{:?}", sequence_upto_root_of(9409).last());
     println!("{:?}", backwards_prime(8940, 10000));
 }
 
 fn backwards_prime(start: usize, stop: usize) -> Vec<usize> {
-    (start..stop).filter(|x| is_reverse_prime(*x)).collect()
+    (start..stop + 1).filter(|x| is_reverse_prime(*x)).collect()
 }
 
 fn reverse(n: usize) -> usize {
@@ -17,15 +16,12 @@ fn reverse(n: usize) -> usize {
 }
 
 fn is_prime(n: usize) -> bool {
-    if n < 2 {
-        false
-    } else if n <= 3 {
-        true
-    } else if is_even(n) {
-        false
-    } else {
-        sequence_upto_root_of(n).all(|x| n % x != 0)
-    }
+    if n < 2 { return false; }
+    if n <= 3 { return true; }
+    if div_by(n, 2) { return false; }
+
+    let limit = (n as f64).sqrt() as usize + 1;
+    (3..limit).step_by(2).all(|x| !div_by(n, x))
 }
 
 fn is_reverse_prime(n: usize) -> bool {
@@ -34,14 +30,8 @@ fn is_reverse_prime(n: usize) -> bool {
     n > 12 && n != rev && is_prime(n) && is_prime(rev)
 }
 
-fn sequence_upto_root_of(n: usize) -> std::iter::StepBy<std::ops::Range<usize>> {
-    let limit = (n as f64).sqrt() as usize;
-
-    (3..limit + 1).step_by(2)
-}
-
-fn is_even(x: usize) -> bool {
-    x % 2 == 0
+fn div_by(n: usize, d: usize) -> bool {
+    n % d == 0
 }
 
 #[cfg(test)]
@@ -50,6 +40,7 @@ mod tests {
 
     #[test]
     fn test_backwards_prime() {
+        assert_eq!(backwards_prime(1, 31), vec![13, 17, 31]);
         assert_eq!(backwards_prime(1, 100), vec![13, 17, 31, 37, 71, 73, 79, 97]);
         assert_eq!(backwards_prime(7000, 7100), vec![7027, 7043, 7057]);
         assert_eq!(backwards_prime(8940, 10000), vec![9001, 9011, 9013, 9029, 9041, 9103, 9127, 9133, 9161, 9173,
