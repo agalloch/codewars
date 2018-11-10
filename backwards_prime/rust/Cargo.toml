@@ -1,0 +1,6 @@
+[package]
+name = "backwards_prime"
+version = "0.1.0"
+authors = ["agalloch <the.dreadful.hours@gmail.com>"]
+
+[dependencies]
