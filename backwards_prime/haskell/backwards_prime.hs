@@ -21,8 +21,8 @@ reverseInt :: Integer -> Integer
 reverseInt = read . reverse . show
 
 prime :: Integer -> Bool
+prime num | num < 2 = False
 prime num
-    | num < 2   = False
     | num <= 3  = True
     | even num  = False
     | otherwise = all (\n -> num `mod` n /= 0) [3, 5..square_root]

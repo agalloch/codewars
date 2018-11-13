@@ -3,14 +3,14 @@ defmodule Back do
 
   def backwards_prime(start, stop) do
     start..stop
-    |> Stream.filter(fn(x) -> x > 12 && different_primes?(x, reverse(x)) end)
-    |> Enum.to_list
+      |> Stream.filter(fn(x) -> x > 12 && different_primes?(x, reverse(x)) end)
+      |> Enum.to_list
   end
 
   def prime?(1), do: false
   def prime?(num) when num <= 3, do: true
   def prime?(num) do
-     Integer.is_odd(num) && Enum.all? odds(num |> :math.sqrt |> trunc), &(rem(num, &1) != 0)
+    Integer.is_odd(num) && Enum.all? odds(num |> :math.sqrt |> trunc), &(rem(num, &1) != 0)
   end
 
   def different_primes?(x, y) do
@@ -25,7 +25,7 @@ defmodule Back do
     Stream.iterate(3, &(&1 + 2)) |> Enum.take_while(&(&1 <= limit))
   end
 
-  def test() do
+  def test do
     [
       backwards_prime(1, 12) == [],
       backwards_prime(1, 31) == [13, 17, 31],
