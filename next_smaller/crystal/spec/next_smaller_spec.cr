@@ -1,5 +1,5 @@
 require "spec"
-require "../next_smaller"
+require "../src/next_smaller"
 
 describe "#next_smaller" do
   it "returns next number" do
