@@ -1,9 +1,24 @@
 AllCops:
-  TargetRubyVersion: 2.5
+  TargetRubyVersion: 2.6
 
-Layout/AlignParameters:
+Layout/ArgumentAlignment:
   Exclude:
     - '*_test.rb'
+Layout/EmptyLinesAroundAttributeAccessor:
+  Enabled: true
+Layout/ParameterAlignment:
+  Exclude:
+    - '*_test.rb'
+Layout/SpaceAroundMethodCallOperator:
+  Enabled: true
+Lint/DeprecatedOpenSSLConstant:
+  Enabled: true
+Lint/MixedRegexpCaptureTypes:
+  Enabled: true
+Lint/RaiseException:
+  Enabled: true
+Lint/StructNewOverride:
+  Enabled: true
 Metrics/AbcSize:
   Exclude:
     - '*_test.rb'
@@ -16,5 +31,19 @@ Metrics/MethodLength:
     - '*_test.rb'
 Style/Documentation:
   Enabled: false
-Naming/UncommunicativeMethodParamName:
+Style/ExponentialNotation:
+  Enabled: true
+Style/HashEachMethods:
+  Enabled: true
+Style/HashTransformKeys:
+  Enabled: true
+Style/HashTransformValues:
+  Enabled: true
+Style/RedundantRegexpCharacterClass:
+  Enabled: true
+Style/RedundantRegexpEscape:
+  Enabled: true
+Style/SlicingWithRange:
+  Enabled: true
+Naming/MethodParameterName:
   Enabled: false

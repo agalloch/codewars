@@ -150,7 +150,7 @@ class Funnel
 
     def calculate_index(offset)
       replace_index =
-        group[offset..-1].find_index do |socket|
+        group[offset..].find_index do |socket|
           socket != EMPTY_SOCKET
         end || 0
 
