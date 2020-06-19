@@ -15,3 +15,5 @@ last_digit("10","10000000000")  // returns 0
 JavaScript, C++, R, PureScript, Rust
 
 Since these languages don't have native arbitrarily large integers, your arguments are going to be strings representing non-negative integers instead.
+
+[Kata link](https://www.codewars.com/kata/5511b2f550906349a70004e1)
